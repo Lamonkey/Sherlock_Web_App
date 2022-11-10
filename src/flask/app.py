@@ -1,3 +1,7 @@
+import sys
+import os.path
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 from flask import Flask, render_template
 from src.adapter import sherlock_adapter
 from flask import Flask, request, Response, json
@@ -10,7 +14,6 @@ scheduler = BackgroundScheduler()
 scheduler.start()
 queue_list = {}
 result_queue = Queue()
-
 
 @app.route("/")
 def home():
