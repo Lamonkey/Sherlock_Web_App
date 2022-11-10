@@ -8,10 +8,10 @@ networks.s
 """
 
 import sys
-import os
-goal_dir = os.path.join(os.path.dirname(__file__), '../../')
-goal_dir = os.path.normpath(goal_dir)
-sys.path.insert(0, goal_dir)
+# import os
+# goal_dir = os.path.join(os.path.dirname(__file__), '../../')
+# goal_dir = os.path.normpath(goal_dir)
+# sys.path.insert(0, goal_dir)
 from src.sherlock.sherlock.sherlock import main
 
 

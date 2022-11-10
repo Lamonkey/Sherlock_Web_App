@@ -1,8 +1,8 @@
-import sys
-import os.path
-goal_dir = os.path.join(os.path.dirname(__file__), '../../')
-goal_dir = os.path.normpath(goal_dir)
-sys.path.insert(0, goal_dir)
+# import sys
+# import os.path
+# goal_dir = os.path.join(os.path.dirname(__file__), '../../')
+# goal_dir = os.path.normpath(goal_dir)
+# sys.path.insert(0, goal_dir)
 from src.adapter import sherlock_adapter
 from flask import Flask, request, Response, json, render_template
 from apscheduler.schedulers.background import BackgroundScheduler
