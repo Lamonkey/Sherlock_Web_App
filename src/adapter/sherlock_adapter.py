@@ -12,7 +12,7 @@ import sys
 # goal_dir = os.path.join(os.path.dirname(__file__), '../../')
 # goal_dir = os.path.normpath(goal_dir)
 # sys.path.insert(0, goal_dir)
-from src.sherlock.sherlock.sherlock import main
+from ..sherlock.sherlock.sherlock import main
 
 
 def dequeue(result_queue):
