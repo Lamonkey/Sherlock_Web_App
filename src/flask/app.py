@@ -1,11 +1,10 @@
 import sys
 import os.path
-goal_dir = os.path.join(os.path.dirname(__file__), '../../src')
+goal_dir = os.path.join(os.path.dirname(__file__), '../../')
 goal_dir = os.path.normpath(goal_dir)
-sys.path.append(goal_dir)
-from flask import Flask, render_template
+sys.path.insert(0, goal_dir)
 from src.adapter import sherlock_adapter
-from flask import Flask, request, Response, json
+from flask import Flask, request, Response, json, render_template
 from apscheduler.schedulers.background import BackgroundScheduler
 from queue import Queue
 
@@ -16,10 +15,11 @@ scheduler.start()
 queue_list = {}
 result_queue = Queue()
 
+
 @app.route("/")
 def home():
     return render_template('index.html')
-    
+
 
 @app.route('/search_users', methods=['GET'])
 def search_user():
@@ -36,11 +36,13 @@ def search_user():
 @app.route('/get_result', methods=['GET'])
 def get_result():
     data = sherlock_adapter.dequeue(result_queue)
-    if len(data) != 0:
-        print('stop')
     response = app.response_class(
         response=json.dumps(data),
         status=200,
         mimetype='application/json'
     )
     return response
+
+
+if __name__ == "__main__":
+    app.run(debug=True)

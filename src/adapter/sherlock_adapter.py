@@ -8,11 +8,11 @@ networks.
 """
 
 import sys
-import os.path
-goal_dir = os.path.join(os.path.dirname(__file__), '../../src/sherlock/sherlock/sherlock')
-goal_dir = os.path.normpath(goal_dir)
-sys.path.append(goal_dir)
-from sherlock.sherlock.sherlock import main
+# import os.path
+# goal_dir = os.path.join(os.path.dirname(__file__), '../../src/sherlock/sherlock/sherlock')
+# goal_dir = os.path.normpath(goal_dir)
+# sys.path.append(goal_dir)
+from src.sherlock.sherlock.sherlock import main
 
 
 def dequeue(result_queue):
@@ -38,6 +38,3 @@ def run_sherlock(result_queue, user_name):
     # sys.argv.append("--no-color")
     sys.argv.append(user_name)
     main(result_queue)
-
-
-
