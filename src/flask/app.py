@@ -1,7 +1,8 @@
 import sys
 import os.path
-
-sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
+goal_dir = os.path.join(os.path.dirname(__file__), '../../src')
+goal_dir = os.path.normpath(goal_dir)
+sys.path.append(goal_dir)
 from flask import Flask, render_template
 from src.adapter import sherlock_adapter
 from flask import Flask, request, Response, json
