@@ -1,19 +1,21 @@
 var count = 1
+var repeat = true
 const event_fetch = new Event('fetch_result');
 var query_username = function(username){
     fetch(`/search_users?usernames=${username}`)
 }
 
 $('#query_form').submit(function(e) {
+    repeat = true
     e.preventDefault();
     // get all the inputs into an array.
      // get all the inputs into an array.
     const username = $('#username').val()
+    $('#results').append(`<a class = 'list-group-item bg-info text-white' href='#' target='_blank'> Result for ${username} </li>`)
     $('#username').val('')
     query_username(username)
     document.dispatchEvent(event_fetch);
 });
-var repeat = true
 document.addEventListener("fetch_result", function(e) {
     
     //delay one sec to fetch reuslt
