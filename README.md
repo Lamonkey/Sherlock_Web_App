@@ -1,6 +1,5 @@
-# Social Media Hunter
-A webapp to quickly find account from different social media with same username.
-This project is mainly based on the [Sherlock project](https://github.com/sherlock-project/sherlock)
+# Sherlock web app
+An unoffical web app for the [Sherlock project](https://github.com/sherlock-project/sherlock). Sherlock is a python program that can found account with same username from different social media platform. The motivation for this web app is to make sherlock more accessible.
 
 ## Run
 run the following code under Social_Media_Hunter/src/flask
