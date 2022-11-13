@@ -1,4 +1,5 @@
 var socket = io()
+const engine = socket.io.engine;
 socket.disconnect()
 var input_username = null
 var $loader = $('<a class="list-group-item " id="loader" href="#" target="_blank"> <div class="spinner-border"role="status"><span class="sr-only"></span></div></a>')
@@ -21,6 +22,10 @@ $('#query_form').submit(function (e) {
     });
 });
 
+engine.on("packet", ({ type, data }) => {
+    console.log(data)
+  });
+
 // socket.on('connect', function () {
 // });
 
@@ -36,6 +41,7 @@ socket.on('query_result', function (data) {
         });
 
     });
+    socket.emit('continous_result')
 });
 
 socket.on('query_complete', function (data) {

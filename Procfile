@@ -1,1 +1,1 @@
-web: gunicorn --worker-class eventlet -w 1 --pythonpath src/flask app:app
+web: gunicorn -k geventwebsocket.gunicorn.workers.GeventWebSocketWorker --workers=1 --pythonpath src/flask app:app

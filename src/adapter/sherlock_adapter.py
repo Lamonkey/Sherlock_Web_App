@@ -21,7 +21,19 @@ class SherlockAdapter():
     def __init__(self):
         self.result_queue = Queue()
         self.sherlock_worker = None
-
+    def get_status(self):
+        '''
+        true completed, false otherwise
+        '''
+        if self.sherlock_worker is None:
+            return True
+        else:
+            if self.sherlock_worker.is_alive():
+                return False
+            else:
+                self.sherlock_worker.join()
+                self.sherlock_worker = None
+                return True
     @staticmethod
     def run_sherlock(result_queue, user_name):
         '''
@@ -46,7 +58,7 @@ class SherlockAdapter():
             self.result_queue.task_done()
         return data_list
 
-    def start_sherlock(self, user_name):
+    def start_adapter(self, user_name):
         if self.sherlock_worker is not None:
             print("Error already one sherlock running")
         else:
