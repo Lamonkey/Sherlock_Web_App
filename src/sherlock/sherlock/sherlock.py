@@ -445,7 +445,7 @@ def sherlock(username, site_data, query_notify,
 
         # Add this site's results into final dictionary with all of the other results.
         results_total[social_network] = results_site
-
+    session.close()
     return results_total
 
 

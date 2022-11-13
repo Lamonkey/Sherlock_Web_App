@@ -1,45 +1,55 @@
-var count = 1
-var repeat = true
-const event_fetch = new Event('fetch_result');
-var query_username = function(username){
-    fetch(`/search_users?usernames=${username}`)
-}
-
-$('#query_form').submit(function(e) {
+var socket = io()
+socket.disconnect()
+var input_username = null
+var $loader = $('<a class="list-group-item " id="loader" href="#" target="_blank"> <div class="spinner-border"role="status"><span class="sr-only"></span></div></a>')
+//submit username to query
+//TODO change to post 
+$('#query_form').submit(function (e) {
     repeat = true
     e.preventDefault();
     // get all the inputs into an array.
-     // get all the inputs into an array.
-    const username = $('#username').val()
-    $('#results').append(`<a class = 'list-group-item bg-info text-white' href='#' target='_blank'> Result for ${username} </li>`)
+    // get all the inputs into an array.
+    // fetch(`/search_users?usernames=${username}`)
+    input_username = $('#username').val()
+    //TODO validation
+    socket.connect()
+    $('#form_button').prop("disabled", true)
+    $('#results').append(`<a class = 'list-group-item bg-info text-white' href='#' target='_blank'> Result for ${input_username} </a>`)
     $('#username').val('')
-    query_username(username)
-    document.dispatchEvent(event_fetch);
+    socket.emit('query', {
+        username: input_username
+    });
 });
-document.addEventListener("fetch_result", function(e) {
-    
-    //delay one sec to fetch reuslt
-    setTimeout(() => {  
-        fetch('/get_result')
-        .then((response) => response.json())
-        .then((data_list) => {
-            for(data of data_list){
-                console.log(data)
-                if(data[0] == 'end' & data[1] == 'end')  repeat = false;
-                $('#results').append(`<a class = 'list-group-item' href='${data[1]}' target='_blank'> ${data[0]} </li>`)
-                console.log("website "+data[0])
-                console.log("link" + data[1])
-            }
-            
+
+// socket.on('connect', function () {
+// });
+
+socket.on('query_result', function (data) {
+    data['data'].forEach(element => {
+        var $new_row = $(`<a class = 'list-group-item animate__animated animate__backInLeft' href='${element[1]}' target='_blank'> ${element[0]} </a>`);
+        $('#results').append($loader)
+        $("#loader").before($new_row)
+        $('a').last()[0].scrollIntoView
+        $("#loader")[0].scrollIntoView({
+            behavior: "smooth", // or "auto" or "instant"
+            block: "start" // or "end"
         });
-        if(repeat) document.dispatchEvent(event_fetch);
-        }, 1000);
-    
-    // setInterval(function () {
-    //     $('#results').append(`<li class = 'list-group-item'> ${count} </li>`)
-    //     count += 1
-    // }, 1000);
-  });
 
+    });
+});
 
+socket.on('query_complete', function (data) {
+    socket.disconnect()
+    // socket.emit('ping', { data: 'ping' });
+});
+socket.on('disconnect', function (data) {
+    $('#results').append(`<a class = 'list-group-item bg-info text-white' href='#' target='_blank'> End of ${input_username} </a>`)
+    $('#username').val('')
+    $('#form_button').prop("disabled", false)
+    $("#loader").remove();
+    // socket.emit('ping', { data: 'ping' });
+});
 
+// window.onbeforeunload = function () {
+//     socket.emit('client_disconnecting', {});
+// }

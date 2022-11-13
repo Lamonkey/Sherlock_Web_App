@@ -121,11 +121,11 @@ class QueryNotifyQueue(QueryNotify):
         return
 
     def start(self, message=None):
-        self.result_queue.put(('start', 'start'))
+        super().start()
+        # self.result_queue.put(('start','#'))
 
     def finish(self, message=None):
-
-        self.result_queue.put(('end', 'end'))
+        self.result_queue.put(None)
 
     def countResults(self):
         global globvar

@@ -1,19 +1,13 @@
-# import sys
-# import os.path
-# goal_dir = os.path.join(os.path.dirname(__file__), '../../')
-# goal_dir = os.path.normpath(goal_dir)
-# sys.path.insert(0, goal_dir)
-from src.adapter import sherlock_adapter
-from flask import Flask, request, Response, json, render_template
-from apscheduler.schedulers.background import BackgroundScheduler
-from queue import Queue
+from src.adapter.sherlock_adapter import SherlockAdapter
+from flask import Flask, render_template
+from flask_socketio import SocketIO, emit
+# import time
+# from apscheduler.schedulers.background import BackgroundScheduler
+
 
 app = Flask(__name__)
-
-scheduler = BackgroundScheduler()
-scheduler.start()
-queue_list = {}
-result_queue = Queue()
+app.config['SECRET_KEY'] = 'secret!'
+socketio = SocketIO(app)
 
 
 @app.route("/")
@@ -21,28 +15,32 @@ def home():
     return render_template('index.html')
 
 
-@app.route('/search_users', methods=['GET'])
-def search_user():
-    args = request.args
-    data = args.to_dict()
-    # string username sepearte by sapce
-    username = data['usernames']
-    scheduler.add_job(sherlock_adapter.run_sherlock, kwargs={
-                      'result_queue': result_queue, 'user_name': username})
-    return Response("{'a':'b'}", status=200, mimetype='application/json')
-    # return f"submited request for {username}"
+@socketio.on('query')
+def handle_query(data):
+    print(f"process on {data['username']}")
+    adapter = SherlockAdapter()
+    adapter.start_sherlock(data['username'])
+
+    while True:
+        query_result, is_complete = adapter.get_result()
+        if is_complete:
+            # tell frontend it is completed, empty data for now
+            emit('query_complete', {})
+            break
+        if len(query_result) != 0:
+            emit('query_result', {'data': query_result})
+    adapter = None
 
 
-@app.route('/get_result', methods=['GET'])
-def get_result():
-    data = sherlock_adapter.dequeue(result_queue)
-    response = app.response_class(
-        response=json.dumps(data),
-        status=200,
-        mimetype='application/json'
-    )
-    return response
+@socketio.on('connect')
+def handle_connection(data):
+    print("connected!")
 
 
-if __name__ == "__main__":
-    app.run(debug=True)
+@socketio.on('disconnect')
+def handle_disconnect():
+    print("connection closed!")
+
+
+if __name__ == '__main__':
+    socketio.run(app)
